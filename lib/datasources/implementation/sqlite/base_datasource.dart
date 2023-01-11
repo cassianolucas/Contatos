@@ -2,6 +2,7 @@ import 'package:contatos/datasources/interface/i_base_datasource.dart';
 import 'package:contatos/mappers/interface/i_base_mapper.dart';
 import 'package:contatos/models/entities/base_entity.dart';
 import 'package:contatos/utils/sqlite/sqlite_util.dart';
+import 'package:contatos/utils/uuid_util.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BaseDataSource<T extends BaseEntity> implements IBaseDataSource<T> {
@@ -18,6 +19,9 @@ class BaseDataSource<T extends BaseEntity> implements IBaseDataSource<T> {
   );
 
   Map<String, dynamic> _converteParaEstrutura(T entity) {
+    // gera id quando não existir
+    if (entity.id.isEmpty) entity.id = UuidUtil.generate();
+
     var map = _mapper.toMap(entity);
 
     Map<String, dynamic> mapDb = {};
@@ -31,12 +35,14 @@ class BaseDataSource<T extends BaseEntity> implements IBaseDataSource<T> {
     return mapDb;
   }
 
+  @override
   Future<List<T>> select({
     String? condicao,
     List<Object>? parametros,
     int? limite,
     int? pagina,
     String? ordenar,
+    Transaction? transacao,
   }) {
     assert(limite == null || limite > 0, "Limite deve ser maior que 0");
     assert(pagina == null || pagina >= 1, "página deve ser maior que 1");
@@ -50,7 +56,9 @@ class BaseDataSource<T extends BaseEntity> implements IBaseDataSource<T> {
 
     colunas.removeWhere((elemento) => elemento == "fk");
 
-    return database
+    var executor = transacao ?? database;
+
+    return executor
         .query(
           tabela,
           columns: colunas,
@@ -63,6 +71,7 @@ class BaseDataSource<T extends BaseEntity> implements IBaseDataSource<T> {
         .then(mapper.fromListMap);
   }
 
+  @override
   Future<T> insert(
     T entity, {
     Transaction? transacao,
@@ -78,6 +87,7 @@ class BaseDataSource<T extends BaseEntity> implements IBaseDataSource<T> {
         .then((value) => entity);
   }
 
+  @override
   Future<T> update(
     T entity,
     String condicao,
@@ -97,6 +107,7 @@ class BaseDataSource<T extends BaseEntity> implements IBaseDataSource<T> {
         .then((value) => entity);
   }
 
+  @override
   Future<bool> delete(
     String tabela,
     String condicao,

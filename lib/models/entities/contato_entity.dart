@@ -1,4 +1,5 @@
 import 'package:contatos/models/entities/base_entity.dart';
+import 'package:contatos/models/entities/endereco_entity.dart';
 import 'package:contatos/models/entities/usuario_entity.dart';
 
 class ContatoEntity extends BaseEntity {
@@ -7,6 +8,7 @@ class ContatoEntity extends BaseEntity {
   late String telefone;
   late String idUsuario;
   UsuarioEntity? usuario;
+  EnderecoEntity? endereco;
 
   ContatoEntity({
     required super.id,
@@ -15,5 +17,6 @@ class ContatoEntity extends BaseEntity {
     required this.telefone,
     required this.idUsuario,
     this.usuario,
+    this.endereco,
   });
 }

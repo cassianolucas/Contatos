@@ -22,6 +22,15 @@ class EnderecoDto {
     required this.uf,
   });
 
+  factory EnderecoDto.fromMap(Map<String, dynamic> map) => EnderecoDto(
+        cep: map[_colunaCep],
+        logradouro: map[_colunaLogradouro],
+        complemento: map[_colunaComplemento],
+        bairro: map[_colunaBairro],
+        localidade: map[_colunaLocalidade],
+        uf: map[_colunaUf],
+      );
+
   Map<String, dynamic> toMap() {
     return {
       _colunaCep: cep,
@@ -33,12 +42,6 @@ class EnderecoDto {
     };
   }
 
-  factory EnderecoDto.fromMap(Map<String, dynamic> map) => EnderecoDto(
-        cep: map[_colunaCep],
-        logradouro: map[_colunaLogradouro],
-        complemento: map[_colunaComplemento],
-        bairro: map[_colunaBairro],
-        localidade: map[_colunaLocalidade],
-        uf: map[_colunaUf],
-      );
+  @override
+  String toString() => "$logradouro, $bairro, $localidade - $uf";
 }

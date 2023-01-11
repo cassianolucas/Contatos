@@ -15,6 +15,8 @@ class SqliteUtil {
 
   static const String _tipoTexto = "text";
 
+  static const String _tipoInteiro = "integer";
+
   static const String tabelaUsuario = "usuarios";
 
   static const String tabelaContato = "contatos";
@@ -93,6 +95,7 @@ class SqliteUtil {
         "id": "$_tipoTextoNaoNulo primary key",
         "login": "$_tipoTextoNaoNulo unique",
         "senha": _tipoTextoNaoNulo,
+        "status": _tipoInteiro,
       };
 
   static Map<String, String> get _estruturaContato => {

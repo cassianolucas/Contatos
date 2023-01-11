@@ -7,4 +7,6 @@ abstract class IUsuarioRepository
   Future<bool> login(String login, String senha);
 
   Future<UsuarioEntity?> buscarPorLogin(String login);
+
+  Future<UsuarioEntity?> buscarUsuarioLogado();
 }

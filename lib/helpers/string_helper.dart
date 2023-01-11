@@ -4,4 +4,8 @@ extension StringHelper on String {
   }
 
   bool get isNumeric => double.tryParse(this) != null;
+
+  String somenteNumero() {
+    return toCharArray().map((e) => e.isNumeric ? e : "").join("");
+  }
 }

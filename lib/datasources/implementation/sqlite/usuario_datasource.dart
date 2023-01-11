@@ -59,4 +59,16 @@ class UsuarioDataSource extends BaseDataSource<UsuarioEntity>
 
     return resultados.first;
   }
+
+  @override
+  Future<UsuarioEntity?> buscarUsuarioLogado() async {
+    var usuarios = await select(
+      condicao: "status = ?",
+      parametros: [Status.logado.index],
+    );
+
+    if (usuarios.isEmpty) return null;
+
+    return usuarios.first;
+  }
 }

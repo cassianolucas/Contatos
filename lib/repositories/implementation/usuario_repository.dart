@@ -22,4 +22,8 @@ class UsuarioRepository
   @override
   Future<UsuarioEntity?> buscarPorLogin(String login) =>
       dataSource.buscarPorLogin(login);
+
+  @override
+  Future<UsuarioEntity?> buscarUsuarioLogado() =>
+      dataSource.buscarUsuarioLogado();
 }

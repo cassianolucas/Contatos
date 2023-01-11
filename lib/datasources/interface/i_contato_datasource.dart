@@ -8,4 +8,6 @@ abstract class IContatoDataSource implements IBaseDataSource<ContatoEntity> {
     int? limite,
     int? pagina,
   });
+
+  Future<ContatoEntity?> buscarPorCpf(String cpf);
 }

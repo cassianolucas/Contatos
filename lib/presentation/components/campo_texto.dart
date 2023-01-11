@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CampoTexto extends StatelessWidget {
   final String hintText;
@@ -7,9 +8,12 @@ class CampoTexto extends StatelessWidget {
   final TextEditingController? controller;
   final String? Function(String?)? validator;
   final bool obscureText;
-  final Function(String)? onChanged;
   final String? initialValue;
   final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
+  final Function(String)? onChanged;
+  final Function(String?)? onSaved;
 
   const CampoTexto({
     super.key,
@@ -22,6 +26,9 @@ class CampoTexto extends StatelessWidget {
     this.onChanged,
     this.initialValue,
     this.keyboardType,
+    this.inputFormatters,
+    this.maxLength,
+    this.onSaved,
   });
 
   @override
@@ -31,17 +38,20 @@ class CampoTexto extends StatelessWidget {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        focusColor: Colors.orange,
         hintText: hintText,
         prefixIcon: Icon(prefixIcon),
         suffixIcon: Icon(suffixIcon),
+        counterText: "",
       ),
       controller: controller,
       validator: validator,
       obscureText: obscureText,
-      onChanged: onChanged,
       initialValue: initialValue,
       keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+      maxLength: maxLength,
+      onChanged: onChanged,
+      onSaved: onSaved,
     );
   }
 }

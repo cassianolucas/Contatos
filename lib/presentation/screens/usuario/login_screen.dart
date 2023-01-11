@@ -12,14 +12,14 @@ import 'package:contatos/utils/routes_util.dart';
 import 'package:contatos/utils/sqlite/sqlite_util.dart';
 import 'package:flutter/material.dart';
 
-class CriarContaScreen extends StatefulWidget {
-  const CriarContaScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<CriarContaScreen> createState() => _CriarContaScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _CriarContaScreenState extends State<CriarContaScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   late final IUsuarioController _usuarioController;
   late final GlobalKey<FormState> _formKey;
 
@@ -39,6 +39,8 @@ class _CriarContaScreenState extends State<CriarContaScreen> {
       }
     });
 
+    Future.delayed(Duration.zero, _usuarioController.estaLogado);
+
     _formKey = GlobalKey<FormState>();
   }
 
@@ -50,22 +52,21 @@ class _CriarContaScreenState extends State<CriarContaScreen> {
     super.dispose();
   }
 
-  Future<void> _criarConta() async {
-    if (_formKey.currentState!.validate()) {
-      await _usuarioController.criarConta();
-    }
+  void _criarConta() {
+    Navigator.of(context).pushReplacementNamed(RoutesUtil.criarConta);
   }
 
-  void _voltar() {
-    Navigator.of(context).pushReplacementNamed(RoutesUtil.login);
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      await _usuarioController.login();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange[400],
-        title: const Text("Cadastrar usuário"),
+        title: const Text("Login"),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -140,14 +141,14 @@ class _CriarContaScreenState extends State<CriarContaScreen> {
                           height: MediaQuery.of(context).size.height * .05,
                         ),
                         BotaoPadrao(
-                          onTap: _criarConta,
-                          text: "Cadastrar",
+                          onTap: _login,
+                          text: "Acessar",
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * .01),
                         BotaoPadrao(
-                          onTap: _voltar,
-                          text: "Voltar",
+                          onTap: _criarConta,
+                          text: "Criar conta",
                         ),
                       ],
                     ),

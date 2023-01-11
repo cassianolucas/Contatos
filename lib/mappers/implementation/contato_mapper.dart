@@ -1,3 +1,4 @@
+import 'package:contatos/helpers/string_helper.dart';
 import 'package:contatos/mappers/implementation/base_mapper.dart';
 import 'package:contatos/mappers/implementation/usuario_mapper.dart';
 import 'package:contatos/mappers/interface/i_contato_mapper.dart';
@@ -35,8 +36,8 @@ class ContatoMapper extends BaseMapper<ContatoEntity>
   Map<String, dynamic> toMap(ContatoEntity entity) => {
         _colunaId: entity.id,
         _colunaNome: entity.nome,
-        _colunaCpf: entity.cpf,
-        _colunaTelefone: entity.telefone,
+        _colunaCpf: entity.cpf.somenteNumero(),
+        _colunaTelefone: entity.telefone.somenteNumero(),
         _colunaIdUsuario: entity.idUsuario,
         if (entity.usuario != null)
           _colunaUsuario: _usuarioMapper.toMap(entity.usuario!),

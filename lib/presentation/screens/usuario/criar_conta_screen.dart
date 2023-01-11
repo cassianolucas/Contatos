@@ -12,14 +12,14 @@ import 'package:contatos/utils/routes_util.dart';
 import 'package:contatos/utils/sqlite/sqlite_util.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class CriarContaScreen extends StatefulWidget {
+  const CriarContaScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<CriarContaScreen> createState() => _CriarContaScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _CriarContaScreenState extends State<CriarContaScreen> {
   late final IUsuarioController _usuarioController;
   late final GlobalKey<FormState> _formKey;
 
@@ -31,8 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
       UsuarioRepository(UsuarioDataSource(SqliteUtil.bancoDados)),
     );
 
-    _formKey = GlobalKey<FormState>();
-
     _usuarioController.addListener(() {
       if (_usuarioController.value is SucessoState) {
         Navigator.of(context).pushReplacementNamed(
@@ -40,6 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     });
+
+    _formKey = GlobalKey<FormState>();
   }
 
   @override
@@ -50,22 +50,21 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _criarConta() {
-    Navigator.of(context).pushReplacementNamed(RoutesUtil.criarConta);
+  Future<void> _criarConta() async {
+    if (_formKey.currentState!.validate()) {
+      await _usuarioController.criarConta();
+    }
   }
 
-  Future<void> _login() async {
-    if (_formKey.currentState!.validate()) {
-      await _usuarioController.login();
-    }
+  void _voltar() {
+    Navigator.of(context).pushReplacementNamed(RoutesUtil.login);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange[400],
-        title: const Text("Login"),
+        title: const Text("Cadastrar usuário"),
         centerTitle: true,
       ),
       body: SafeArea(
@@ -140,14 +139,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: MediaQuery.of(context).size.height * .05,
                         ),
                         BotaoPadrao(
-                          onTap: _login,
-                          text: "Acessar",
+                          onTap: _criarConta,
+                          text: "Cadastrar",
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * .01),
                         BotaoPadrao(
-                          onTap: _criarConta,
-                          text: "Criar conta",
+                          onTap: _voltar,
+                          text: "Voltar",
                         ),
                       ],
                     ),

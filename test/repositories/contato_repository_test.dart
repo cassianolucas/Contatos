@@ -1,6 +1,7 @@
 import 'package:contatos/datasources/implementation/sqlite/contato_datasource.dart';
 import 'package:contatos/datasources/implementation/sqlite/usuario_datasource.dart';
 import 'package:contatos/models/entities/contato_entity.dart';
+import 'package:contatos/models/entities/endereco_entity.dart';
 import 'package:contatos/models/entities/usuario_entity.dart';
 import 'package:contatos/repositories/implementation/contato_repository.dart';
 import 'package:contatos/repositories/implementation/usuario_repository.dart';
@@ -34,6 +35,17 @@ void main() async {
     cpf: "00000000000",
     telefone: "00000000000",
     idUsuario: usuario.id,
+    endereco: EnderecoEntity(
+      id: "",
+      cep: "83606390",
+      logradouro: "Rua Ayrton Senna da Silva",
+      bairro: "Jardim Busmayer",
+      localidade: "Campo Largo",
+      uf: "PR",
+      latitude: "-25.4509861",
+      longitude: "-49.532242",
+      idContato: "",
+    ),
   );
 
   group("Contato", () {

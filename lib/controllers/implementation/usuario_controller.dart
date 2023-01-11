@@ -3,13 +3,16 @@ import 'package:contatos/controllers/interface/i_usuario_controller.dart';
 import 'package:contatos/models/entities/usuario_entity.dart';
 import 'package:contatos/models/states/carregando_state.dart';
 import 'package:contatos/models/states/erro_state.dart';
+import 'package:contatos/models/states/inicial_state.dart';
 import 'package:contatos/models/states/interface/i_base_state.dart';
 import 'package:contatos/models/states/sucesso_state.dart';
 import 'package:contatos/repositories/implementation/usuario_repository.dart';
+import 'package:contatos/utils/criptografia_util.dart';
 import 'package:contatos/utils/excecoes_util.dart';
+import 'package:contatos/utils/usuario_util.dart';
 
 class UsuarioController extends BaseController implements IUsuarioController {
-  final UsuarioRepository repositorio;
+  final UsuarioRepository _repositorio;
 
   @override
   String email = "";
@@ -17,33 +20,60 @@ class UsuarioController extends BaseController implements IUsuarioController {
   @override
   String senha = "";
 
-  UsuarioController(this.repositorio);
+  UsuarioController(this._repositorio);
 
   @override
   Future<void> excluirMinhaConta() {
     alteraEstado(CarregandoState());
 
-    return repositorio
-        .remover("id")
+    return _repositorio
+        .remover(UsuarioUtil.I.usuarioLogado!.id)
         .then<IBaseState>((removeu) => SucessoState(null))
         .catchError((e) {
       return ErroState("Não foi possível excluir a conta!");
-    });
+    }).then(alteraEstado);
   }
 
   @override
-  Future<void> logOut() {
-    // TODO: implement logOut
-    throw UnimplementedError();
+  Future<void> logOut() async {
+    alteraEstado(CarregandoState());
+
+    UsuarioUtil.I.usuarioLogado!.status = Status.deslogado;
+
+    await _repositorio
+        .alterar(UsuarioUtil.I.usuarioLogado!)
+        .then((usuario) {
+          UsuarioUtil.I.usuarioLogado = null;
+
+          return usuario;
+        })
+        .then<IBaseState>((usuario) => SucessoState(usuario))
+        .catchError((e) => ErroState("Não foi possível realizar o logout!"))
+        .then(alteraEstado);
   }
 
   @override
   Future<void> login() {
     alteraEstado(CarregandoState());
 
-    return repositorio.login(email, senha).then((logou) {
-      if (logou) {
-        return SucessoState(null);
+    return _repositorio
+        .login(email, CriptografiaUtil.criptografar(senha))
+        .then<UsuarioEntity?>((logou) async {
+      if (!logou) return null;
+
+      var usuario = await _repositorio.buscarPorLogin(email);
+
+      if (usuario != null) {
+        usuario.status = Status.logado;
+        await _repositorio.alterar(usuario);
+
+        UsuarioUtil.I.usuarioLogado = usuario;
+      }
+
+      return usuario;
+    }).then((usuario) {
+      if (usuario != null) {
+        return SucessoState(usuario);
       } else {
         return ErroState("Usuário ou senha inválidos!");
       }
@@ -54,16 +84,27 @@ class UsuarioController extends BaseController implements IUsuarioController {
   Future<void> criarConta() {
     alteraEstado(CarregandoState());
 
-    return repositorio
-        .criar(UsuarioEntity(id: "", login: email, senha: senha))
+    return _repositorio
+        .criar(UsuarioEntity(
+          id: "",
+          login: email,
+          senha: CriptografiaUtil.criptografar(senha),
+          status: Status.logado,
+        ))
+        .then((usuario) {
+          UsuarioUtil.I.usuarioLogado = usuario;
+
+          return usuario;
+        })
         .then<IBaseState>((usuario) => SucessoState(usuario))
         .catchError((e) {
-      if (e is ConflitoExcecao) {
-        return ErroState(e.mensagem!);
-      }
+          if (e is ConflitoExcecao) {
+            return ErroState(e.mensagem!);
+          }
 
-      throw e;
-    }).then(alteraEstado);
+          throw e;
+        })
+        .then(alteraEstado);
   }
 
   @override
@@ -104,5 +145,20 @@ class UsuarioController extends BaseController implements IUsuarioController {
     if (senha.length < 6) return mensagemErro;
 
     return null;
+  }
+
+  @override
+  Future<void> estaLogado() async {
+    alteraEstado(CarregandoState());
+
+    var usuario = await _repositorio.buscarUsuarioLogado();
+
+    if (usuario != null) {
+      UsuarioUtil.I.usuarioLogado = usuario;
+
+      alteraEstado(SucessoState(usuario));
+    }
+
+    alteraEstado(InicialState());
   }
 }

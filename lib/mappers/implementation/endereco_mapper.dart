@@ -1,3 +1,4 @@
+import 'package:contatos/helpers/string_helper.dart';
 import 'package:contatos/mappers/implementation/base_mapper.dart';
 import 'package:contatos/mappers/implementation/contato_mapper.dart';
 import 'package:contatos/mappers/interface/i_contato_mapper.dart';
@@ -44,7 +45,7 @@ class EnderecoMapper extends BaseMapper<EnderecoEntity>
   @override
   Map<String, dynamic> toMap(EnderecoEntity entity) => {
         _colunaId: entity.id,
-        _colunaCep: entity.cep,
+        _colunaCep: entity.cep.somenteNumero(),
         _colunaLogradouro: entity.logradouro,
         _colunaComplemento: entity.complemento,
         _colunaBairro: entity.bairro,

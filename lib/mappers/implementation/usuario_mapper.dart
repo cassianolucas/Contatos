@@ -7,12 +7,14 @@ class UsuarioMapper extends BaseMapper<UsuarioEntity>
   static const String _colunaId = "id";
   static const String _colunaLogin = "login";
   static const String _colunaSenha = "senha";
+  static const String _colunaStatus = "status";
 
   @override
   UsuarioEntity fromMap(Map<String, dynamic> map) => UsuarioEntity(
         id: map[_colunaId],
         login: map[_colunaLogin],
         senha: map[_colunaSenha],
+        status: Status.values[map[_colunaStatus]],
       );
 
   @override
@@ -20,5 +22,6 @@ class UsuarioMapper extends BaseMapper<UsuarioEntity>
         _colunaId: entity.id,
         _colunaLogin: entity.login,
         _colunaSenha: entity.senha,
+        _colunaStatus: entity.status.index,
       };
 }

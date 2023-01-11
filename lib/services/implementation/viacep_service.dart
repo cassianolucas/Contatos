@@ -37,7 +37,7 @@ class ViaCepService implements IViaCepService {
     String logradouro,
   ) async {
     // validar informações
-    if (uf.isEmpty) {
+    if (uf.isEmpty || uf.length < 2) {
       throw FormatoInvalidoExcecao(mensagem: "Uf não informada!");
     }
 

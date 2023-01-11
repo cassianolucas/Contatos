@@ -3,4 +3,6 @@ import 'package:contatos/models/entities/usuario_entity.dart';
 
 abstract class IUsuarioDataSource implements BaseDataSource<UsuarioEntity> {
   Future<UsuarioEntity?> buscarPorLogin(String login);
+
+  Future<UsuarioEntity?> buscarUsuarioLogado();
 }

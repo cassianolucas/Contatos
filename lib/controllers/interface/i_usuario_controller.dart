@@ -19,4 +19,6 @@ abstract class IUsuarioController implements IBaseController {
   Future<void> logOut();
 
   Future<void> excluirMinhaConta();
+
+  Future<void> estaLogado();
 }
